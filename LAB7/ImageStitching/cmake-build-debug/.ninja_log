@@ -1,0 +1,17 @@
+# ninja log v5
+7	2723	6732964837554277	CMakeFiles/ImageStitching.dir/code/main.cpp.obj	a0f5d13e4dc86e00
+8	2806	6732962083940712	CMakeFiles/ImageStitching.dir/code/panoramic_utils.cpp.obj	aa3bdd2cf96fe672
+2724	2987	6732964840210901	ImageStitching.exe	b8d1b5f1cf583ca4
+25	1186	6733154032811506	CMakeFiles/ImageStitching.dir/code/panoramic_utils.cpp.obj	750eaeb2aa1ef5d5
+10	1475	6733154035685810	CMakeFiles/ImageStitching.dir/code/main.cpp.obj	a86a61ff7ceab839
+1475	1719	6733154038089392	ImageStitching.exe	a731f7e743818a48
+4	1369	6733154508714488	CMakeFiles/ImageStitching.dir/code/main.cpp.obj	a86a61ff7ceab839
+1369	1521	6733154510206363	ImageStitching.exe	a731f7e743818a48
+6	1317	6733155088669306	CMakeFiles/ImageStitching.dir/code/main.cpp.obj	a86a61ff7ceab839
+1317	1462	6733155090088445	ImageStitching.exe	a731f7e743818a48
+3	1315	6733155247115899	CMakeFiles/ImageStitching.dir/code/main.cpp.obj	a86a61ff7ceab839
+1315	1460	6733155248541841	ImageStitching.exe	a731f7e743818a48
+3	1315	6733155962816380	CMakeFiles/ImageStitching.dir/code/main.cpp.obj	a86a61ff7ceab839
+1315	1464	6733155964265338	ImageStitching.exe	a731f7e743818a48
+4	1282	6733156091708703	CMakeFiles/ImageStitching.dir/code/main.cpp.obj	a86a61ff7ceab839
+1283	1416	6733156093030537	ImageStitching.exe	a731f7e743818a48

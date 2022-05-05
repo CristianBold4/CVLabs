@@ -1,0 +1,43 @@
+#include <opencv2/highgui.hpp>
+#include <stdio.h>
+#include <iostream>
+
+using namespace cv;
+using namespace std;
+
+int main(int argc, char** argv)
+{
+    //colored image
+    Mat img_color = imread("Lena_color.jpg");
+    namedWindow("Lena color", WINDOW_NORMAL);
+    imshow("Lena color", img_color);
+    int nChannels = img_color.channels();
+    cout << "Image colored channels: " << nChannels << "\n";
+    Mat ch1, ch2, ch3; // declare three matrices for channels
+    // "channels" is a vector of 3 Mat arrays:
+    vector<Mat> channels(3);
+    // split img:
+    split(img, channels);
+    if (nChannels == 3)
+    {
+
+    // get the channels (follow BGR order in OpenCV)
+    ch1 = channels[0];
+    ch2 = channels[1];
+    ch3 = channels[2];
+    // modify channel// then merge
+
+        merge(channels, img);
+    }
+    char waitKeyCol = static_cast<char> (waitKey(0));
+    cout << "Wait key colored image: " << waitKeyCol << "\n";
+
+    //grayscale image
+    Mat img_gray = imread("Lena_grayscale.jpg");
+    namedWindow("Lena gray", WINDOW_NORMAL);
+    imshow("Lena gray", img_gray);
+    cout << "Image grayscaled channels: " << img_gray.channels() << "\n";
+    char waitKeyGray = static_cast<char> (waitKey(0));
+    cout << "Wait key colored image: " << waitKeyGray << "\n";
+    return 0;
+}

@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1647703578 source:c:\users\cristian\dropbox\università\4 anno\secondo semestre\computer vision\labs\lab2\task4\main.cpp
+	<opencv2/highgui.hpp>
+	<opencv2/imgproc.hpp>
+	<stdio.h>
+	<iostream>
+
