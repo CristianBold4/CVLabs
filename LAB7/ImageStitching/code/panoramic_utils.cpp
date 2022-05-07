@@ -2,7 +2,7 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 
-cv::Mat cylindricalProj(const cv::Mat& image,const double angle)
+cv::Mat cylindricalProj(const cv::Mat& image, const double angle)
 {
   cv::Mat tmp,result;
   cv::cvtColor(image, tmp, cv::COLOR_BGR2GRAY);

@@ -1,4 +1,4 @@
-"C:\Program Files\JetBrains\CLion 2021.3.4\bin\cmake\win\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Debug "-DCMAKE_MAKE_PROGRAM=C:/Program Files/JetBrains/CLion 2021.3.4/bin/ninja/win/ninja.exe" -G Ninja "C:\Users\Cristian\Desktop\Università\4 anno\Secondo Semestre\Computer Vision\LABS\LAB7\ImageStitching"
+"C:\Program Files\JetBrains\CLion 2021.3.4\bin\cmake\win\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Debug "-DCMAKE_MAKE_PROGRAM=C:/Program Files/JetBrains/CLion 2021.3.4/bin/ninja/win/ninja.exe" -G Ninja C:\Users\Cristian\Desktop\ImageStitching
 CMake Deprecation Warning at CMakeLists.txt:1 (cmake_minimum_required):
   Compatibility with CMake < 2.8.12 will be removed from a future version of
   CMake.
@@ -27,4 +27,4 @@ CMake Deprecation Warning at CMakeLists.txt:1 (cmake_minimum_required):
 -- You might need to add C:\opencv\build\x86\mingw\install\x64\mingw\bin to your PATH to be able to run your applications.
 -- Configuring done
 -- Generating done
--- Build files have been written to: C:/Users/Cristian/Desktop/Università/4 anno/Secondo Semestre/Computer Vision/LABS/LAB7/ImageStitching/cmake-build-debug
+-- Build files have been written to: C:/Users/Cristian/Desktop/ImageStitching/cmake-build-debug

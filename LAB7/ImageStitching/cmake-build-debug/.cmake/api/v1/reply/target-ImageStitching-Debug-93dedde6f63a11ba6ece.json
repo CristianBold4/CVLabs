@@ -62,7 +62,7 @@
 			[
 				{
 					"backtrace" : 3,
-					"path" : "C:/Users/Cristian/Desktop/Università/4 anno/Secondo Semestre/Computer Vision/LABS/LAB7/ImageStitching/header"
+					"path" : "C:/Users/Cristian/Desktop/ImageStitching/header"
 				},
 				{
 					"backtrace" : 3,
@@ -82,7 +82,8 @@
 			"sourceIndexes" : 
 			[
 				0,
-				1
+				1,
+				2
 			]
 		}
 	],
@@ -131,6 +132,7 @@
 				"role" : "libraries"
 			},
 			{
+				"backtrace" : 2,
 				"fragment" : "C:\\opencv\\build\\x86\\mingw\\install\\x64\\mingw\\lib\\libopencv_features2d455.dll.a",
 				"role" : "libraries"
 			},
@@ -169,7 +171,15 @@
 			"sourceIndexes" : 
 			[
 				0,
-				1
+				1,
+				2
+			]
+		},
+		{
+			"name" : "Header Files",
+			"sourceIndexes" : 
+			[
+				3
 			]
 		}
 	],
@@ -186,6 +196,17 @@
 			"compileGroupIndex" : 0,
 			"path" : "code/panoramic_utils.cpp",
 			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "code/Panorama.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "header/Panorama.h",
+			"sourceGroupIndex" : 1
 		}
 	],
 	"type" : "EXECUTABLE"
