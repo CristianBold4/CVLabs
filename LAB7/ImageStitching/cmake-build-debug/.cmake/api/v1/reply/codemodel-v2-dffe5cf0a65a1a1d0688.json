@@ -39,7 +39,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "ImageStitching::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-ImageStitching-Debug-93dedde6f63a11ba6ece.json",
+					"jsonFile" : "target-ImageStitching-Debug-9a2e7cb063ec50594d3f.json",
 					"name" : "ImageStitching",
 					"projectIndex" : 0
 				}
@@ -49,8 +49,8 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "C:/Users/Cristian/Desktop/ImageStitching/cmake-build-debug",
-		"source" : "C:/Users/Cristian/Desktop/ImageStitching"
+		"build" : "C:/Users/Cristian/Desktop/Università/4 anno/Secondo Semestre/Computer Vision/Repo/CVLabs/LAB7/ImageStitching/cmake-build-debug",
+		"source" : "C:/Users/Cristian/Desktop/Università/4 anno/Secondo Semestre/Computer Vision/Repo/CVLabs/LAB7/ImageStitching"
 	},
 	"version" : 
 	{

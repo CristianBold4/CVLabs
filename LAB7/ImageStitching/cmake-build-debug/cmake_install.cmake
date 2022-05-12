@@ -1,4 +1,4 @@
-# Install script for directory: C:/Users/Cristian/Desktop/ImageStitching
+# Install script for directory: C:/Users/Cristian/Desktop/Università/4 anno/Secondo Semestre/Computer Vision/Repo/CVLabs/LAB7/ImageStitching
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "C:/Users/Cristian/Desktop/ImageStitching/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "C:/Users/Cristian/Desktop/Università/4 anno/Secondo Semestre/Computer Vision/Repo/CVLabs/LAB7/ImageStitching/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
