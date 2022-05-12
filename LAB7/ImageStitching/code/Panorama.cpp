@@ -4,34 +4,46 @@
 
 #include "Panorama.h"
 #include "panoramic_utils.h"
-
-#include <iostream>
 #include <vector>
 #include <algorithm>
-#include <math.h>
-#include <string>
-
 #include "opencv2/opencv.hpp"
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/stitching.hpp>
+#include <filesystem>
 
 
 using namespace std;
 using namespace cv;
 
 // - Constructor
-Panorama::Panorama(const std::vector<cv::Mat> images, const double FOV, const double threshold_matching) {
-    this->images = images;
+Panorama::Panorama(std::string dataset_path, const double FOV, const double threshold_matching) {
+    load_images(dataset_path);
     this->FOV = FOV;
     this->threshold_matching = threshold_matching;
+}
+
+void Panorama::load_images(std::string dataset_path) {
+    Mat src;
+    for (const auto &entry: std::filesystem::directory_iterator(dataset_path)) {
+        src = imread(entry.path().string(), IMREAD_UNCHANGED);
+
+        // Check if image is loaded fine
+        if (src.empty()) {
+            cerr << "Error opening image: " << entry.path()  << "\n";
+        } else {
+            this->images.push_back(src); // Load an image
+        }
+    }
 }
 
 void Panorama::cylindrical_projection() {
     for (int i = 0; i < images.size(); i++) {
         projected_images.push_back(cylindricalProj(images[i], FOV / 2));
     }
+
+    cout << "Cylindrical projection done..." << endl;
 }
 
 void Panorama::SIFT_extractor(std::vector<std::vector<cv::KeyPoint>> &keypoints, std::vector<cv::Mat> &descriptors) {
@@ -50,6 +62,7 @@ void Panorama::SIFT_extractor(std::vector<std::vector<cv::KeyPoint>> &keypoints,
         descriptors.push_back(d);
 
         // -- Drawing and showing keypoints
+
         /*
         Mat output;
         drawKeypoints(images[i], k, output);
@@ -60,6 +73,8 @@ void Panorama::SIFT_extractor(std::vector<std::vector<cv::KeyPoint>> &keypoints,
         k.clear();
 
     }
+
+    cout << "Features extracted..." << endl;
 
 }
 
@@ -76,57 +91,43 @@ void Panorama::BF_matcher(std::vector<cv::Mat> &descriptors, std::vector<std::ve
 
     matches.clear();
 
+    cout << "Matching done..." << endl;
 
+}
+
+
+bool Panorama::sort_matching(const cv::DMatch &m1, const cv::DMatch &m2) {
+
+    return m1.distance < m2.distance;
 }
 
 
 void Panorama::refine_match(std::vector<std::vector<cv::DMatch>> &total_matches,
                             std::vector<std::vector<cv::DMatch>> &refined_matches) {
 
-    float dist, min_dist;
-    int ii = 0, ij = 0;
 
-    vector<DMatch> refined;
-    vector<float> min_distances;
+
+    vector<DMatch> distances, refined;
+    double min_dist;
 
     for (int i = 0; i < total_matches.size(); i++) {
+        distances = total_matches[i];
+        sort(distances.begin(), distances.end(), sort_matching);
+        min_dist = distances[0].distance;
 
-        min_dist = total_matches[i][0].distance;
-
-        for (int j = 0; j < total_matches[i].size(); j++) {
-            dist = total_matches[i][j].distance;
-
-            if (dist < min_dist) {
-                min_dist = dist;
-                ii = i;
-                ij = j;
+        for (int i = 0; i < distances.size(); i++) {
+            if (distances[i].distance > threshold_matching * min_dist) {
+                break;
             }
-        }
-
-        min_distances.push_back(min_dist);
-    }
-
-    // -- Refine using ratio
-    for (int i = 0; i < total_matches.size(); i++) {
-
-        for (int j = 0; j < total_matches[i].size(); j++) {
-
-            dist = total_matches[i][j].distance;
-
-            if (dist <= min_distances[i] * threshold_matching) {
-
-                refined.push_back(total_matches[i][j]);
-
-            }
-
+            refined.push_back(distances[i]);
         }
 
         refined_matches.push_back(refined);
         refined.clear();
-
-
+        distances.clear();
     }
 
+    cout << "Matching refined..." << endl;
 
 }
 
@@ -165,7 +166,8 @@ void Panorama::find_homography(std::vector<std::vector<cv::KeyPoint>> &keypoints
 
         for (int j = 0; j < refined_matches[i].size(); j++){
 
-            if ((int)total_h_mask[i].Mat::at<uchar>(j,0)) {
+            // -- filter inliers
+            if (total_h_mask[i].at<unsigned char>(j,0)) {
                 good_matches.push_back(refined_matches[i][j]);
             }
 
@@ -176,48 +178,63 @@ void Panorama::find_homography(std::vector<std::vector<cv::KeyPoint>> &keypoints
 
     }
 
+    cout << "RANSAC applied..." << endl;
+
 }
 
-void Panorama::find_distances(std::vector<std::vector<float>> &total_distances,
+void Panorama::find_distances(std::vector<std::vector<float>> &total_distances_x,
+                              std::vector<std::vector<float>> &total_distances_y,
                               std::vector<std::vector<cv::KeyPoint>> &keypoints,
                               std::vector<std::vector<cv::DMatch>> &final_matches) {
 
     Point2f p1, p2;
-    float dist;
-    vector<float> distances;
+    float dist_x, dist_y;
+    vector<float> distances_x, distances_y;
 
     for (int i = 0; i < keypoints.size() - 1; i++) {
 
         for (int j = 0; j < final_matches[i].size(); j++) {
             p1 = keypoints[i][final_matches[i][j].queryIdx].pt;
             p2 = keypoints[i+1][final_matches[i][j].trainIdx].pt;
-            dist = (float)projected_images[i].cols - p1.x + p2.x;
-            distances.push_back(dist);
+            dist_x = (float)projected_images[i].cols - p1.x + p2.x;
+            dist_y = abs(p1.y - p2.y);
+            distances_x.push_back(dist_x);
+            distances_y.push_back(dist_y);
         }
 
-        total_distances.push_back(distances);
-        distances.clear();
+        total_distances_x.push_back(distances_x);
+        total_distances_y.push_back(distances_y);
+        distances_x.clear();
+        distances_y.clear();
 
     }
+
+    cout << "Distances computed..." << endl;
 
 
 }
 
-void Panorama::merge_images(cv::Mat &panorama, std::vector<float> &total_mean_distances,
-                            std::vector<std::vector<float>> &total_distances,
-                            std::vector<std::vector<cv::KeyPoint>> &keypoints,
-                            std::vector<std::vector<cv::DMatch>> &final_matches) {
-    float dist, n_inliers;
+void Panorama::stitch_images(cv::Mat &panorama, std::vector<float> &total_mean_distances_x,
+                             std::vector<float> &total_mean_distances_y,
+                             std::vector<std::vector<float>> &total_distances_x,
+                             std::vector<std::vector<float>> &total_distances_y,
+                             std::vector<std::vector<cv::KeyPoint>> &keypoints,
+                             std::vector<std::vector<cv::DMatch>> &final_matches) {
+
+
+    float dist_x, dist_y, n_inliers;
 
     for (int i = 0; i < final_matches.size(); i++) {
-        dist = 0;
+        dist_x = 0, dist_y = 0;
         n_inliers = final_matches[i].size();
 
         for (int j = 0; j < n_inliers; j++) {
-            dist += total_distances[i][j];
+            dist_x += total_distances_x[i][j];
+            dist_y += total_distances_y[i][j];
         }
 
-        total_mean_distances.push_back(dist/n_inliers);
+        total_mean_distances_x.push_back(dist_x/n_inliers);
+        total_mean_distances_y.push_back(dist_y/n_inliers);
 
     }
 
@@ -226,33 +243,37 @@ void Panorama::merge_images(cv::Mat &panorama, std::vector<float> &total_mean_di
     shiftMat.at<double>(0, 0) = 1;
     shiftMat.at<double>(1, 1) = 1;
 
+
     Mat dst;
     panorama = images[0];
 
     for (int i = 0; i < images.size() - 1; i++) {
-        shiftMat.at<double>(0, 2) = -total_mean_distances[i];
-        warpAffine(images[i + 1], dst, shiftMat, Size(images[i + 1].cols - total_mean_distances[i], images[i + 1].rows), INTER_CUBIC, BORDER_CONSTANT, Scalar());
+        shiftMat.at<double>(0, 2) = -total_mean_distances_x[i];
+        //shiftMat.at<double>(1, 2) = total_mean_distances_y[i];
+        warpAffine(images[i + 1], dst, shiftMat, Size(images[i + 1].cols - total_mean_distances_x[i], images[i + 1].rows), INTER_CUBIC, BORDER_CONSTANT, Scalar());
         hconcat(panorama, dst, panorama);
     }
+
+    cout << "Images stitched..." << endl;
 
 }
 
 void Panorama::create_panorama(cv::Mat &panorama) {
 
     vector<vector<KeyPoint>> k;
-    vector<Mat> d;
+    vector<Mat> d, H;
     vector<vector<DMatch>> total_matches, refined_matches, final_matches;
 
-    vector<vector<float>> total_distances;
-    vector<float> mean_distances;
+    vector<vector<float>> total_distances_x, total_distances_y;
+    vector<float> mean_distances_x, mean_distances_y;
 
     cylindrical_projection();
     SIFT_extractor(k, d);
     BF_matcher(d, total_matches);
     refine_match(total_matches, refined_matches);
     find_homography(k, refined_matches, final_matches);
-    find_distances(total_distances, k, final_matches);
-    merge_images(panorama, mean_distances, total_distances, k, final_matches);
+    find_distances(total_distances_x, total_distances_y, k, final_matches);
+    stitch_images(panorama, mean_distances_x, mean_distances_y, total_distances_x, total_distances_y, k, final_matches);
 
 }
 

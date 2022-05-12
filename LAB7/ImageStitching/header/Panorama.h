@@ -2,8 +2,8 @@
 // Created by Cristian on 06/05/2022.
 //
 
-#ifndef IMAGESTITCHING_PANORAMA_H
-#define IMAGESTITCHING_PANORAMA_H
+#ifndef PANORAMA_H
+#define PANORAMA_H
 
 #include "opencv2/opencv.hpp"
 #include <opencv2/core.hpp>
@@ -22,23 +22,28 @@ class Panorama {
 
         // - Functions
 
+        void load_images(std::string dataset_path);
+
         void cylindrical_projection();
 
         void SIFT_extractor(std::vector<std::vector<cv::KeyPoint>> &keypoints, std::vector<cv::Mat> &descriptors);
 
         void BF_matcher(std::vector<cv::Mat> &descriptors, std::vector<std::vector<cv::DMatch>> &total_matches);
 
+        static bool sort_matching(const cv::DMatch &m1, const cv::DMatch &m2);
+
         void refine_match(std::vector<std::vector<cv::DMatch>> &total_matches, std::vector<std::vector<cv::DMatch>> &refined_matches);
 
         void find_homography(std::vector<std::vector<cv::KeyPoint>> &keypoints, std::vector<std::vector<cv::DMatch>> &refined_matches, std::vector<std::vector<cv::DMatch>> &final_matches);
 
-        void find_distances(std::vector<std::vector<float>> &total_distances, std::vector<std::vector<cv::KeyPoint>> &keypoints, std::vector<std::vector<cv::DMatch>> &final_matches);
+        void find_distances(std::vector<std::vector<float>> &total_distances_x, std::vector<std::vector<float>> &total_distances_y, std::vector<std::vector<cv::KeyPoint>> &keypoints, std::vector<std::vector<cv::DMatch>> &final_matches);
 
-        void merge_images (cv::Mat &panorama, std::vector<float> &total_mean_distances, std::vector<std::vector<float>> &total_distances, std::vector<std::vector<cv::KeyPoint>> &keypoints, std::vector<std::vector<cv::DMatch>> &final_matches);
+        void stitch_images (cv::Mat &panorama, std::vector<float> &total_mean_distances_x, std::vector<float> &total_mean_distances_y, std::vector<std::vector<float>> &total_distances_x, std::vector<std::vector<float>> &total_distances_y, std::vector<std::vector<cv::KeyPoint>> &keypoints, std::vector<std::vector<cv::DMatch>> &final_matches);
 
     public:
         // -- Constructor
-        Panorama(std::vector<cv::Mat> images, double FOV, double threshold_matching);
+        Panorama(std::string dataset_path, double FOV, double threshold_matching);
+
 
         // -- create panorama
         void create_panorama(cv::Mat &panorama);
@@ -46,4 +51,4 @@ class Panorama {
 };
 
 
-#endif //IMAGESTITCHING_PANORAMA_H
+#endif //PANORAMA_H
